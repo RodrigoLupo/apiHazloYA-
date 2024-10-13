@@ -76,7 +76,7 @@ cd apiHazloYA!
 npm install
 
 3. Configura las variables de entorno. Crea un archivo .env basado en el ejemplo:
-
+```bash
 PORT=3000
 MYSQL_HOST=localhost
 MYSQL_USER=root
@@ -84,7 +84,7 @@ MYSQL_PASSWORD=password
 MYSQL_DATABASE=nombre_de_la_base_de_datos
 MONGO_URI=mongodb://localhost:27017/nombre_de_la_base_de_datos_mongo
 JWT_SECRET=alguna_clave_secreta
-
+```
 4. Levanta los contenedores de Docker para MySQL y MongoDB:
 docker-compose up -d
 
@@ -96,15 +96,25 @@ npm start
 
 El servidor estará corriendo en http://localhost:3000.
 
-Uso
+#### Uso
+
 Endpoints principales:
+
 POST /api/users/register: Registro de usuarios.
+
 POST /api/auth/login: Login de usuarios.
+
 POST /api/documents/upload/:id: Subida de documentos PDF (DNI, antecedentes).
+
 GET /api/jobs: Obtener trabajos disponibles.
+
 POST /api/jobs: Crear un trabajo (solo contratistas).
+
 Pruebas con Postman
+
 Registra un usuario enviando una petición POST a /api/users/register con los campos nombre, apellido, email, password.
+
 Inicia sesión con el usuario registrado enviando una petición POST a /api/auth/login.
+
 Sube documentos enviando una petición POST a /api/documents/upload/:id con el archivo PDF correspondiente.
 
