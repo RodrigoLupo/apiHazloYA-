@@ -1,0 +1,39 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+
+# Mac OS
+.DS_Store
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+
+# Uploads directory (PDF files)
+uploads/
+
+# Docker related files
+docker-compose.override.yml
+
+# Coverage directory used by testing tools
+coverage/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Ignore dist folder
+dist/
+
+# Ignore build folder
+build/
