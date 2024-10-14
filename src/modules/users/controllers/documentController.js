@@ -12,3 +12,22 @@ exports.uploadDocument = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+exports.getUserWithDocuments = async (req, res) => {
+  try {
+    const { id } = req.params; // ID del usuario pasado como parámetro
+    const userData = await documentService.getUserWithDocuments(id);
+
+    res.status(200).json(userData);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+exports.getAllUsersWithDocuments = async (req, res) => {
+  try {
+    // Llamar al servicio para obtener todos los usuarios con documentos
+    const usersWithDocuments = await documentService.getAllUsersWithDocuments();
+    res.status(200).json(usersWithDocuments);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};

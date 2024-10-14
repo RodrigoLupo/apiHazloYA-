@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const userRepository = require('../repositories/userRepository');
 const jwt = require('jsonwebtoken');
+const User = require('../models/User'); // Ajusta la ruta según la estructura de tu proyecto
 
 exports.registerUser = async (userData) => {
   const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -12,8 +13,25 @@ exports.registerUser = async (userData) => {
   return await userRepository.createUser(newUser);
 };
 
+// Obtener el usuario por ID desde MySQL
+exports.getUserById = async (userId) => {
+  return await User.findByPk(userId); // Busca el usuario por su primary key (id)
+};
+exports.getUsersByState = async (state) => {
+  return await User.findAll({ where: { estado: state } });
+};
+// Activar el usuario cambiando su estado a true
 exports.activateUser = async (userId) => {
-  return await userRepository.updateUserState(userId, true);
+  const user = await User.findByPk(userId);
+  
+  if (!user) {
+    throw new Error('Usuario no encontrado');
+  }
+
+  user.estado = true;
+  await user.save();
+
+  return user;
 };
 exports.login = async (email, password) => {
     const user = await userRepository.findUserByEmail(email);
@@ -23,4 +41,4 @@ exports.login = async (email, password) => {
     if (!passwordMatch) return null;
   
     return user;
-  };
+};

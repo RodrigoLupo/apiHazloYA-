@@ -18,5 +18,7 @@ const upload = multer({ storage });
 
 // Ruta para subir documentos PDF
 router.post('/upload/:id', upload.single('documento'), documentController.uploadDocument);
+router.get('/user-documents/:id', documentController.getUserWithDocuments);
+router.get('/user-documents', documentController.getAllUsersWithDocuments);
 
 module.exports = router;
