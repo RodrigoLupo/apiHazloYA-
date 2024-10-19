@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const userRoutes = require('../modules/users/routes/userRoutes.js');
 const documentRoutes = require('../modules/users/routes/documentRoutes.js');
@@ -12,5 +13,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/users', userRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
 module.exports = app;

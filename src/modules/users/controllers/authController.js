@@ -8,24 +8,24 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Buscar usuario por email
     const user = await userRepository.findUserByEmail(email);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Comparar la contraseña
-    const isMatch = await bcrypt.compare(password, user.password);
+    if (!user.estado) {
+      // If user is not activated, return a response indicating that
+      return res.status(403).json({ error: 'Your account is under review. Please wait for activation.' });
+    }
 
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
 
-    // Generar un token JWT
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    // Generate a token for regular login (can be refreshed if needed)
+    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     return res.json({ token });
   } catch (error) {
@@ -33,7 +33,6 @@ const login = async (req, res) => {
     return res.status(500).json({ error: 'Server error' });
   }
 };
-
 module.exports = {
   login,
 };

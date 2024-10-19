@@ -8,9 +8,14 @@ exports.registerUser = async (userData) => {
   const newUser = {
     ...userData,
     password: hashedPassword,
-    estado: false // Se activa tras revisión del admin
+    estado: false // Pending verification
   };
-  return await userRepository.createUser(newUser);
+  const user = await userRepository.createUser(newUser);
+  
+  // Generate a temporary token for the verification process (3-day validity)
+  const tempToken = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '3d' });
+
+  return { user, tempToken }; // Return the user and the tempToken
 };
 
 // Obtener el usuario por ID desde MySQL

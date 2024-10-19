@@ -1,6 +1,7 @@
 const Document = require('../models/Document');
 const documentRepository = require('../repositories/documentRepository');
 const userService = require('../services/userService');
+const path = require('path');
 
 exports.saveDocument = async (usuarioId, tipoDocumento, filePath) => {
   const newDocument = new Document({
@@ -32,7 +33,11 @@ exports.getUserWithDocuments = async (usuarioId) => {
       estado: user.estado,
       fecha_registro: user.fecha_registro
     },
-    documents
+    documents: documents.map(doc => ({
+      tipo_documento: doc.tipo_documento,
+      ruta_archivo: `http://localhost:3000/uploads/${path.basename(doc.ruta_archivo)}`,
+      fecha_subida: doc.fecha_subida
+    }))
   };
 };
 
@@ -54,8 +59,7 @@ exports.getAllUsersWithDocuments = async () => {
       fecha_registro: user.fecha_registro,
       documents: documents.map(doc => ({
         tipo_documento: doc.tipo_documento,
-        ruta_archivo: doc.ruta_archivo,
-        fecha_subida: doc.fecha_subida
+        ruta_archivo: `http://localhost:3000/uploads/${path.basename(doc.ruta_archivo)}`
       }))
     };
   }));
