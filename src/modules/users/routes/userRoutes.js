@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
 
+const { verifyToken, isEncargadoOrAdmin } = require('../../../middleware/authMiddleware');
 
 router.post('/register', userController.registerUser);
-router.put('/activate/:id', userController.activateUser);
-router.post('/login', authController.login);
-
+router.put('/activate/:id', verifyToken,isEncargadoOrAdmin,userController.activateUser);
+router.get('/activados/:page', verifyToken, isEncargadoOrAdmin, userController.getActiveUsers);
+router.get('/desactivados/:page', verifyToken, isEncargadoOrAdmin, userController.getInactiveUsers);
 module.exports = router;
 

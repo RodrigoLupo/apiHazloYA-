@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const documentController = require('../controllers/documentController');
-
+const { verifyToken , isEncargadoOrAdmin} = require('../../../middleware/authMiddleware');
 // Configuración de multer para guardar los archivos en la carpeta 'uploads'
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -17,8 +17,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Ruta para subir documentos PDF
-router.post('/upload/:id', upload.single('documento'), documentController.uploadDocument);
-router.get('/user-documents/:id', documentController.getUserWithDocuments);
-router.get('/user-documents', documentController.getAllUsersWithDocuments);
+router.post('/upload', upload.single('documento'), verifyToken, documentController.uploadDocument);
+router.get('/user-documents/:id', verifyToken, isEncargadoOrAdmin,documentController.getUserWithDocuments);
+router.get('/user-documents', verifyToken, isEncargadoOrAdmin,documentController.getAllUsersWithDocuments);
 
 module.exports = router;
