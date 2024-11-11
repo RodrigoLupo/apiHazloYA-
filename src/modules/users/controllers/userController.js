@@ -2,8 +2,8 @@ const userService = require('../services/userService');
 
 exports.registerUser = async (req, res) => {
   try {
-    const { user, tokenTemporal } = await userService.registerUser(req.body);
-    res.status(201).json({ user, token: tokenTemporal });
+    const { tokenTemporal } = await userService.registerUser(req.body);
+    res.status(201).json({ token: tokenTemporal });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

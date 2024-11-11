@@ -18,7 +18,7 @@ exports.registerUser = async (userData) => {
   const user = await userRepository.createUser(newUser);
 
   const tokenTemporal = jwt.sign({ id: user.id, temporal: true }, process.env.JWT_SECRET, { expiresIn: '3d' });
-  return { user, tokenTemporal };
+  return { tokenTemporal };
 };
 exports.createEncargadoOrAdmin = async (adminId, userData) => {
   const admin = await userRepository.findUserById(adminId);
