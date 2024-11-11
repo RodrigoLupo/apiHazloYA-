@@ -10,7 +10,7 @@ console.log('MYSQL_HOST:', process.env.MYSQL_HOST); // Para verificar el valor c
 
 sequelize.sync().then(() => {
   console.log('MySQL connected');
-  mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  mongoose.connect(process.env.MONGO_URI)
     .then(() => {
       console.log('MongoDB connected');
       app.listen(PORT, () => {

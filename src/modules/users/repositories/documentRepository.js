@@ -8,3 +8,7 @@ exports.getDocumentsByUserId = async (usuarioId) => {
 exports.createDocument = async (documentData) => {
   return await Document.create(documentData);
 };
+
+exports.deleteDocumentsByUserId = async (usuarioId) => {
+  await Document.deleteMany({ usuario_id: usuarioId });
+};

@@ -9,8 +9,8 @@ const login = async (req, res) => {
   try {
     const user = await userRepository.findUserByEmail(email);
 
-    if (!user) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
+    if (!user || !['colaborador', 'contratista'].includes(user.tipo_usuario)) {
+      return res.status(404).json({ error: 'Accesso solo para usuarios del aplicativo' });
     }
 
     if (!user.estado) {

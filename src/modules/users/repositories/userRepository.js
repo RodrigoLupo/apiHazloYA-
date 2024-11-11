@@ -1,7 +1,7 @@
 // src/modules/users/repositories/userRepository.js
 
 const User = require('../models/User');
-
+const { Op } = require('sequelize');
 // Crear un nuevo usuario
 exports.createUser = async (userData) => {
   return await User.create(userData);
@@ -31,7 +31,7 @@ exports.updateUser = async (id, userData) => {
 
 exports.deleteUser = async (id) => {
   const user = await this.findUserById(id);
-  if (user) {
+  if (user && user.estado==false && user.tipo_usuario!='admin') {
     await user.destroy();
     return true;
   }
@@ -39,17 +39,25 @@ exports.deleteUser = async (id) => {
 };
 
 exports.getAllUsers = async (offset, limit) => {
-  return await User.findAll({ where: { estado: true }, offset, limit });
+  return await User.findAll({ where: { estado: true,
+    [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
+   }, offset, limit });
 };
 
 exports.getAllInactiveUsers = async (offset, limit) => {
-  return await User.findAll({ where: { estado: false }, offset, limit });
+  return await User.findAll({ where: { estado: false,
+    [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
+   }, offset, limit });
 };
 
 exports.countUsers = async () => {
-  return await User.count({ where: { estado: true } });
+  return await User.count({ where: { estado: true
+    , [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }] 
+   } });
 };
 
 exports.countInactiveUsers = async () => {
-  return await User.count({ where: { estado: false } });
+  return await User.count({ where: { estado: false,
+    [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
+   } });
 };

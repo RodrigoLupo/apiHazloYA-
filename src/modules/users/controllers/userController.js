@@ -31,6 +31,23 @@ exports.activateUser = async (req, res) => {
   }
 };
 
+exports.deactivateUser = async (req, res) => {
+  try {
+    const user = await userService.deactivateUser(req.params.id);
+    res.status(200).json({ message: 'Usuario desactivado correctamente', user });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    await userService.rechazar(req.params.id);
+    res.status(200).json({ message: 'Usuario y documentos eliminados correctamente' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 exports.getActiveUsers = async (req, res) => {
   try {
     const page = parseInt(req.params.page) || 1;

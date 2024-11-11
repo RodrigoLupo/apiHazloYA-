@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const userRepository = require('../repositories/userRepository');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Ajusta la ruta según la estructura de tu proyecto
-
+const documentRepository = require('../repositories/documentRepository');
 exports.registerUser = async (userData) => {
   if (!['colaborador', 'contratista'].includes(userData.tipo_usuario)) {
     throw new Error('Solo los tipos colaborador o contratista están permitidos para registro.');
@@ -38,7 +38,10 @@ exports.createEncargadoOrAdmin = async (adminId, userData) => {
 
   return newUser;
 };
-
+exports.rechazar = async (userId) => {
+  await userRepository.deleteUser(userId);
+  await documentRepository.deleteDocumentsByUserId(userId);
+}
 // Crear un admin inicial si no existe ninguno
 exports.ensureAdminExists = async () => {
   const adminExists = await userRepository.adminExists();
@@ -62,7 +65,7 @@ exports.getUsersByState = async (state) => {
 };
 // Activar el usuario cambiando su estado a true
 exports.activateUser = async (userId) => {
-  const user = await User.findByPk(userId);
+  const user = await userRepository.findUserById(userId);
   
   if (!user) {
     throw new Error('Usuario no encontrado');
@@ -72,6 +75,16 @@ exports.activateUser = async (userId) => {
   await user.save();
 
   return user;
+};
+exports.deactivateUser = async (userId) => {
+  const user = await userRepository.findUserById(userId);
+  if (!user) {
+    throw new Error('Usuario no encontrado');
+  }else if(user.tipo_usuario === 'admin'){
+    throw new Error('No puedes desactivar a un administrador');
+  }
+  user.estado = false;
+  await user.save();
 };
 exports.getActiveUsers = async (page = 1) => {
   const limit = 10;
