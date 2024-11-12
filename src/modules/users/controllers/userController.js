@@ -8,7 +8,14 @@ exports.registerUser = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
+exports.EstadoUsuario = async (req, res) => {
+  try {
+    const estado = await userService.getStateById(req.userId);  // Recibe el objeto `{ estado }`
+    res.status(200).json(estado);  // Enviar el objeto `{ estado }` directamente
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 exports.createEncargadoOrAdmin = async (req, res) => {
   try {
     const user = await userService.createEncargadoOrAdmin(req.userId, req.body);

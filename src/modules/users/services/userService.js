@@ -101,3 +101,8 @@ exports.getInactiveUsers = async (page = 1) => {
   const total = await userRepository.countInactiveUsers();
   return { users, total };
 };
+
+exports.getStateById = async (userId) => { 
+  const estado = await userRepository.findUserStatusById(userId);
+  return estado;  // Retorna el objeto `{ estado }` recibido desde el repositorio
+};

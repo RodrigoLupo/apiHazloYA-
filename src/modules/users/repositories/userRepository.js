@@ -37,7 +37,13 @@ exports.deleteUser = async (id) => {
   }
   throw new Error('Usuario no encontrado');
 };
-
+exports.findUserStatusById = async (id) => {
+  const user = await this.findUserById(id);
+  if (user) {
+    return { estado: user.estado };  // Retorna un objeto con la propiedad `estado`
+  }
+  throw new Error('Usuario no encontrado');
+};
 exports.getAllUsers = async (offset, limit) => {
   return await User.findAll({ where: { estado: true,
     [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]

@@ -11,4 +11,5 @@ router.get('/desactivados/:page', verifyToken, isEncargadoOrAdmin, userControlle
 router.put('/deactivate/:id', verifyToken,isEncargadoOrAdmin,userController.deactivateUser);
 router.post('/create-encargado', verifyToken, isEncargadoOrAdmin, userController.createEncargadoOrAdmin);
 router.delete('/rechazar/:id', verifyToken, isEncargadoOrAdmin, userController.deleteUser);
+router.get('/miestado', verifyToken, userController.EstadoUsuario);
 module.exports = router;
