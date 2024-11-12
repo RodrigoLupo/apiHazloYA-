@@ -1,4 +1,5 @@
 const Postulacion = require('../models/Postulacion');
+const User = require('../../users/models/User');
 
 exports.createPostulacion = async (postulacionData) => {
     return await Postulacion.create(postulacionData);
@@ -16,3 +17,9 @@ exports.updatePostulacionStatus = async (id, newStatus) => {
     }
     throw new Error('Postulación no encontrada');
 }
+exports.findPostulacionesByTrabajoId = async (trabajoId) => {
+    return await Postulacion.findAll({
+        where: { trabajo_id: trabajoId },
+        include: [{ model: User, as: 'colaborador', attributes: ['nombre', 'apellido', 'calificacion'] }]
+    });
+};
