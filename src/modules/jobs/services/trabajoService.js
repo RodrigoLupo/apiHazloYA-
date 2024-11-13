@@ -25,3 +25,11 @@ exports.countTrabajosByDistrito = async (userId) => {
     const user = await userRepository.findUserById(userId);
     return await trabajoRepository.countTrabajosByDistrito(user.distrito);
 };
+exports.listUltimosTrabajosByContratista = async (contratistaId, page) => {
+    try {
+        const trabajos = await trabajoRepository.findUltimosTrabajosByContratista(contratistaId, page);
+        return trabajos;
+    } catch (error) {
+        throw new Error('Error al obtener los ultimos trabajos del contratista: ' + error.message);
+    }
+};

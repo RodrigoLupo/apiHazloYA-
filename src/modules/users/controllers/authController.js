@@ -24,7 +24,7 @@ const login = async (req, res) => {
     }
 
     // Generate a token for regular login (can be refreshed if needed)
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user.id}, process.env.JWT_SECRET);
 
     return res.json({ token });
   } catch (error) {
@@ -52,7 +52,7 @@ const loginAdminOrEncargado = async (req, res) => {
       return res.status(400).json({ error: 'Credenciales invalidas' });
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email, rol: user.tipo_usuario }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user.id}, process.env.JWT_SECRET);
     return res.json({ token });
   } catch (error) {
     console.error(error);

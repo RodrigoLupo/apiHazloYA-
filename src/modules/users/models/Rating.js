@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const RatingSchema = new mongoose.Schema({
+  contratistaId: { type: Number, required: true },
   trabajoId: { type: Number, required: true },
   colaboradorId: { type: Number, required: true },
   puntualidad: { type: Number, required: true, min: 1, max: 5 },

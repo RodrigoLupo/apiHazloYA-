@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const userRepository = require('../modules/users/repositories/userRepository');
 const blacklistService = require('../modules/users/services/blacklistService');
 
-// Middleware de verificación de token con logging detallado
 exports.verifyToken = async (req, res, next) => {
   try {
     // Verificar que el encabezado de autorización esté presente y en el formato correcto
@@ -21,7 +20,6 @@ exports.verifyToken = async (req, res, next) => {
       return res.status(401).json({ message: 'Token inválido o bloqueado' });
     }
 
-    // Verificar el token usando jwt.verify
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Verificar si es un token temporal y si el usuario ya está activado
@@ -32,8 +30,6 @@ exports.verifyToken = async (req, res, next) => {
         return res.status(401).json({ message: 'Token temporal inválido, usuario activado.' });
       }
     }
-
-    // Pasar el ID del usuario al siguiente middleware
     req.userId = decoded.id;
     next();
   } catch (error) {
@@ -60,6 +56,34 @@ exports.isAdmin = async (req, res, next) => {
     next();
   } catch (error) {
     res.status(500).json({ message: 'Error al verificar rol de administrador.' });
+  }
+};
+
+exports.isColaborador = async (req, res, next) => {
+  try {
+    const user = await userRepository.findUserById(req.userId);
+
+    if (!user || user.tipo_usuario !== 'colaborador') {
+      return res.status(403).json({ message: 'Acceso denegado: Se requiere rol de colaborador.' });
+    }
+
+    next();
+  } catch (error) {
+    res.status(500).json({ message: 'Error al verificar rol de colaborador.' });
+  }
+};
+
+exports.isContratista = async (req, res, next) => {
+  try {
+    const user = await userRepository.findUserById(req.userId);
+
+    if (!user || user.tipo_usuario !== 'contratista') {
+      return res.status(403).json({ message: 'Acceso denegado: Se requiere rol de contratista.' });
+    }
+
+    next();
+  } catch (error) {
+    res.status(500).json({ message: 'Error al verificar rol de contratista.' });
   }
 };
 

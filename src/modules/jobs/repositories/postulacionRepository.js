@@ -1,6 +1,6 @@
 const Postulacion = require('../models/Postulacion');
 const User = require('../../users/models/User');
-
+const Trabajo = require('../models/Trabajo');
 exports.createPostulacion = async (postulacionData) => {
     return await Postulacion.create(postulacionData);
 }
@@ -20,6 +20,29 @@ exports.updatePostulacionStatus = async (id, newStatus) => {
 exports.findPostulacionesByTrabajoId = async (trabajoId) => {
     return await Postulacion.findAll({
         where: { trabajo_id: trabajoId },
-        include: [{ model: User, as: 'colaborador', attributes: ['nombre', 'apellido', 'calificacion'] }]
+        include: [{ model: User, as: 'colaborador', attributes: ['id', 'nombre', 'apellido', 'calificacion'] }]
+    });
+};
+
+exports.findPostulacionesByColaboradorId = async (colaboradorId, estado, offset, limit) => {
+    return await Postulacion.findAndCountAll({
+        where: {
+            colaborador_id: colaboradorId,
+            estado: estado
+        },
+        include: [
+            {
+                model: Trabajo,
+                as: "trabajo",
+                attributes: ['titulo', 'distrito'],
+                include: {
+                    model: User,
+                    as: 'contratista',
+                    attributes: ['nombre']
+                }
+            }
+        ],
+        offset: offset,
+        limit: limit
     });
 };

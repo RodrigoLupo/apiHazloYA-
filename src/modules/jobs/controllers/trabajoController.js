@@ -27,3 +27,15 @@ exports.listTrabajosCercanos = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+exports.listUltimosTrabajosByContratista = async (req, res) => {
+    try {
+        const contratistaId = req.userId;
+        const page = parseInt(req.params.page, 10) || 1;
+        
+        const trabajos = await trabajoService.listUltimosTrabajosByContratista(contratistaId, page);
+        
+        res.status(200).json(trabajos);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};

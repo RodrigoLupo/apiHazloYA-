@@ -2,10 +2,10 @@ const ratingService = require('../services/ratingService');
 
 exports.rateCollaborator = async (req, res) => {
     const { trabajoId, colaboradorId, puntualidad, calidad, comunicacion } = req.body;
-  
+    const userId = req.userId;
     try {
       // Registrar la calificación en MongoDB
-      await ratingService.registerRating(trabajoId, colaboradorId, { puntualidad, calidad, comunicacion });
+      await ratingService.registerRating(userId,trabajoId, colaboradorId, { puntualidad, calidad, comunicacion });
   
       // Actualizar el ranking en MySQL
       await ratingService.updateUserRanking(colaboradorId);

@@ -47,13 +47,13 @@ exports.findUserStatusById = async (id) => {
 exports.getAllUsers = async (offset, limit) => {
   return await User.findAll({ where: { estado: true,
     [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
-   }, offset, limit });
+   }, order:[['fecha_registro', 'DESC']], offset, limit });
 };
 
 exports.getAllInactiveUsers = async (offset, limit) => {
   return await User.findAll({ where: { estado: false,
     [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
-   }, offset, limit });
+   }, order:[['fecha_registro', 'DESC']],offset, limit });
 };
 
 exports.countUsers = async () => {

@@ -1,9 +1,10 @@
 const Rating = require('../models/Rating');
 const User = require('../models/User');
-exports.registerRating = async (trabajoId, colaboradorId, calificaciones) => {
+exports.registerRating = async (userId, trabajoId, colaboradorId, calificaciones) => {
   const { puntualidad, calidad, comunicacion } = calificaciones;
 
   const rating = new Rating({
+    contratistaId: userId,
     trabajoId,
     colaboradorId,
     puntualidad,
