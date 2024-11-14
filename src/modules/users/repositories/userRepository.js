@@ -67,3 +67,30 @@ exports.countInactiveUsers = async () => {
     [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
    } });
 };
+exports.findColaboradoresByLocation = async ({ colaboradorIds, ciudad, distrito, offset, limit, search, searchl }) => {
+  const whereCondition = {
+    id: colaboradorIds,
+    ciudad,
+    estado: true,
+    tipo_usuario: 'colaborador',
+  };
+
+  // Añadir búsqueda por nombre o apellido si se proporciona el parámetro "search"
+  if (search) {
+    whereCondition[Op.or] = [
+      { nombre: { [Op.like]: `%${search}%` } },
+      { apellido: { [Op.like]: `%${searchl}%` } },
+    ];
+  }
+
+  return await User.findAll({
+    where: whereCondition,
+    attributes: ['id', 'nombre', 'apellido', 'calificacion'],
+    order: [
+      ['distrito', distrito ? 'DESC' : 'ASC'],
+      ['fecha_registro', 'DESC'],
+    ],
+    offset,
+    limit,
+  });
+};

@@ -7,7 +7,7 @@ const authRoutes = require('../modules/users/routes/authRoutes.js');
 const jobRoutes = require('../modules/jobs/routes/trabajoRoutes.js');
 const applicationRoutes = require('../modules/jobs/routes/postulacionRoutes.js');
 const ratingRoutes = require('../modules/users/routes/ratingRoutes.js');
-
+const oficioRoutes = require('../modules/users/routes/oficioRoutes.js');
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -20,5 +20,6 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/ranking', ratingRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
+app.use('/api/oficios', oficioRoutes);
 
 module.exports = app;
