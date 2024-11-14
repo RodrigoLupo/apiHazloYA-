@@ -33,3 +33,20 @@ exports.listUltimosTrabajosByContratista = async (contratistaId, page) => {
         throw new Error('Error al obtener los ultimos trabajos del contratista: ' + error.message);
     }
 };
+
+exports.getTrabajosByTitleAndLocation = async (search, colaboradorId, page = 1, limit = 10, estado = 'Abierto') => {
+  const offset = (page - 1) * limit;
+
+  // Obtener al colaborador para acceder a la ciudad y distrito del contratista (trabajos vinculados)
+  const colaborador = await userRepository.findUserById(colaboradorId);
+  if (!colaborador) throw new Error('Colaborador no encontrado');
+
+  return await trabajoRepository.findTrabajosByTitleAndLocation({
+    search,
+    ciudad: colaborador.ciudad,
+    distrito: colaborador.distrito,
+    estado,
+    offset,
+    limit,
+  });
+};

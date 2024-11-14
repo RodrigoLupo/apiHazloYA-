@@ -39,3 +39,24 @@ exports.listUltimosTrabajosByContratista = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+exports.getTrabajosByTitleAndLocation = async (req, res) => {
+    try {
+      const search = req.query.search || null;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const estado = req.query.estado || 'Aceptado';
+  
+      const {trabajos, total} = await trabajoService.getTrabajosByTitleAndLocation(
+        search,
+        req.userId, // ID del colaborador que realiza la búsqueda
+        page,
+        limit,
+        estado
+      );
+  
+      res.status(200).json({ total ,trabajos });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
+  

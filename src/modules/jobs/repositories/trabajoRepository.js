@@ -1,5 +1,7 @@
 const Trabajo = require('../models/Trabajo');
 const User = require('../../users/models/User');
+const { Op } = require('sequelize');
+
 exports.createTrabajo = async (trabajoData) => {
     return await Trabajo.create(trabajoData);
 };
@@ -47,4 +49,32 @@ exports.countTrabajosByDistrito = async (distrito) => {
     return await Trabajo.count({
         where: { distrito, estado: 'Abierto' }
     });
+};
+
+
+exports.findTrabajosByTitleAndLocation = async ({ search, ciudad, distrito, estado = 'Abierto', offset, limit }) => {
+  const whereCondition = {
+    estado,
+    ...(search && { titulo: { [Op.like]: `%${search}%` } }), // Filtro por título si se especifica
+  };
+
+  const { rows: trabajos, count: total } = await Trabajo.findAndCountAll({
+    where: whereCondition,
+    include: [
+      {
+        model: User,
+        as: 'contratista',
+        where: { ciudad }, // Filtra por ciudad en el modelo User (contratista)
+        attributes: ['id','nombre', 'apellido', 'ciudad'],
+      },
+    ],
+    attributes: ['id' , 'titulo', 'descripcion', 'estado', 'precio', 'duracion', 'fecha_creacion'],
+    order: [
+      ['distrito', distrito ? 'DESC' : 'ASC'],
+      ['fecha_creacion', 'ASC'],
+    ],
+    offset,
+    limit,
+  });
+  return { trabajos, total };
 };
