@@ -61,9 +61,28 @@ exports.deleteOficio = async (req, res) => {
 
 exports.countColaboradoresPorOficio = async (req, res) => {
   try {
-    const count = await oficioService.countColaboradoresPorOficio(req.params.nombre);
-    res.status(200).json({ count });
+    const data = await oficioService.countColaboradoresPorOficio();
+    res.status(200).json(data);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
+};
+
+exports.getTodosOficios = async (req, res) => {
+    try {
+        const oficios = await oficioService.getAllOficios();
+        res.status(200).json({ oficios });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+exports.checkearOficios = async (req, res) => {
+    try {
+        const colaboradorId = req.userId;
+        const hasOficio = await oficioService.checkColaboradorInOficios(colaboradorId);
+        res.status(200).json({hasOficio: hasOficio});
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 };

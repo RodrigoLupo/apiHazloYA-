@@ -22,11 +22,11 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ error: 'Credenciales Invalidas' });
     }
-
+    const tipo = user.tipo_usuario; 
     // Generate a token for regular login (can be refreshed if needed)
     const token = jwt.sign({ id: user.id}, process.env.JWT_SECRET);
 
-    return res.json({ token });
+    return res.json({ token, tipo });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Error de servidor' });

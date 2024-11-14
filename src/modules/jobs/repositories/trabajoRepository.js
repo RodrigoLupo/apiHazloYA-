@@ -39,7 +39,7 @@ exports.findTrabajosByDistrito = async (distrito, page) => {
                 attributes: ['id','nombre', 'calificacion']  // Solo nombre y calificación del contratista
             }
         ],
-        attributes: ['titulo', 'descripcion', 'precio', 'duracion', 'distrito'],  // Datos del trabajo
+        attributes: ['id','titulo', 'descripcion', 'precio', 'duracion', 'distrito'],  // Datos del trabajo
         order: [['fecha_creacion', 'DESC']],
         limit: 10,
         offset: (page - 1) * 10

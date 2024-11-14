@@ -39,6 +39,14 @@ exports.deleteOficio = async (oficioId) => {
   return await oficioRepository.deleteOficio(oficioId);
 };
 
-exports.countColaboradoresPorOficio = async (nombre) => {
-  return await oficioRepository.countColaboradoresPorOficio(nombre);
+exports.countColaboradoresPorOficio = async () => {
+  return await oficioRepository.countColaboradoresPorOficio();
+};
+
+exports.getAllOficios = async () => {
+    return await oficioRepository.findAllOficios();
+};
+
+exports.checkColaboradorInOficios = async (colaboradorId) => {
+    return await oficioRepository.checkarColaboradorInOficios(colaboradorId);
 };

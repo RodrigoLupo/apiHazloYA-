@@ -17,8 +17,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Ruta para subir documentos PDF
-router.post('/upload', upload.single('documento'), verifyToken, documentController.uploadDocument);
-router.get('/user-documents/:id', verifyToken, isEncargadoOrAdmin,documentController.getUserWithDocuments);
-router.get('/user-documents', verifyToken, isEncargadoOrAdmin,documentController.getAllUsersWithDocuments);
+router.post('/upload', upload.single('documento'), verifyToken, documentController.uploadDocument); // Ruta para subir un documento PDF
+router.get('/user-documents/:id', verifyToken, isEncargadoOrAdmin,documentController.getUserWithDocuments); // Ruta para obtener un usuario con sus documentos
+router.get('/user-documents', verifyToken, isEncargadoOrAdmin,documentController.getAllUsersWithDocuments); // Ruta para obtener todos los usuarios con sus documentos
 
 module.exports = router;

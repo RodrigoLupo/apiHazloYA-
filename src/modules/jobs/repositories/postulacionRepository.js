@@ -34,11 +34,11 @@ exports.findPostulacionesByColaboradorId = async (colaboradorId, estado, offset,
             {
                 model: Trabajo,
                 as: "trabajo",
-                attributes: ['titulo', 'distrito'],
+                attributes: ['id','titulo', 'distrito'],
                 include: {
                     model: User,
                     as: 'contratista',
-                    attributes: ['nombre']
+                    attributes: ['id','nombre']
                 }
             }
         ],
