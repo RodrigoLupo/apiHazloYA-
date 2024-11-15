@@ -74,3 +74,11 @@ exports.getInactiveUsers = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+exports.getReport = async (req, res) => {
+  try {
+    const report = await userService.getReport();
+    res.status(200).json(report);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

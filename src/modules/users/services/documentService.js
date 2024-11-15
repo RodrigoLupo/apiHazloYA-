@@ -47,8 +47,8 @@ exports.getAllUsersWithDocuments = async () => {
   
   // Iterar sobre los usuarios para obtener sus documentos
   const usersWithDocuments = await Promise.all(users.map(async (user) => {
-    const documents = await documentRepository.getDocumentsByUserId(user.id);
-
+    const documents = await documentRepository.getPendingDocumentsByUserId(user.id);
+    if (documents.length === 0) return null;
     return {
       id: user.id,
       nombre: user.nombre,
@@ -64,5 +64,5 @@ exports.getAllUsersWithDocuments = async () => {
     };
   }));
 
-  return usersWithDocuments;
+  return usersWithDocuments.filter(user => user !== null);
 };

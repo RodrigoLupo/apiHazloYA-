@@ -3,6 +3,8 @@ const userRepository = require('../repositories/userRepository');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Ajusta la ruta según la estructura de tu proyecto
 const documentRepository = require('../repositories/documentRepository');
+const trabajoRepository = require('../../jobs/repositories/trabajoRepository');
+
 exports.registerUser = async (userData) => {
   if (!['colaborador', 'contratista'].includes(userData.tipo_usuario)) {
     throw new Error('Solo los tipos colaborador o contratista están permitidos para registro.');
@@ -40,7 +42,10 @@ exports.createEncargadoOrAdmin = async (adminId, userData) => {
 };
 exports.rechazar = async (userId) => {
   await userRepository.deleteUser(userId);
-  await documentRepository.deleteDocumentsByUserId(userId);
+  const documentos = await documentRepository.getDocumentByIdUser(userId);
+  if (documentos) {
+    await documentRepository.updateDocumentStatusByUserId("rechazado", userId);
+  }
 }
 // Crear un admin inicial si no existe ninguno
 exports.ensureAdminExists = async () => {
@@ -65,16 +70,20 @@ exports.getUsersByState = async (state) => {
 };
 // Activar el usuario cambiando su estado a true
 exports.activateUser = async (userId) => {
-  const user = await userRepository.findUserById(userId);
-  
-  if (!user) {
-    throw new Error('Usuario no encontrado');
+  const estado_documento = await documentRepository.updateDocumentStatusByUserId("aprobado",userId);
+    if(estado_documento){
+      const user = await userRepository.findUserById(userId);
+    
+    if (!user) {
+      throw new Error('Usuario no encontrado');
+    }
+
+    user.estado = true;
+    await user.save();
+
+    return user;
   }
-
-  user.estado = true;
-  await user.save();
-
-  return user;
+  throw new Error('Documento no encontrado');
 };
 exports.deactivateUser = async (userId) => {
   const user = await userRepository.findUserById(userId);
@@ -105,4 +114,15 @@ exports.getInactiveUsers = async (page = 1) => {
 exports.getStateById = async (userId) => { 
   const estado = await userRepository.findUserStatusById(userId);
   return estado;  // Retorna el objeto `{ estado }` recibido desde el repositorio
+};
+exports.getReport = async () => {
+  const nroTrabajos = await trabajoRepository.countTrabajos();
+  const nroColaboradoresActivos = await userRepository.countUsuariosByTipoAndEstado('colaborador');
+  const nroContratistasActivos = await userRepository.countUsuariosByTipoAndEstado('contratista');
+
+  return {
+    nroTrabajos,
+    nroColaboradoresActivos,
+    nroContratistasActivos
+  };
 };

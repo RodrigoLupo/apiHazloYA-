@@ -2,7 +2,7 @@
 
 const User = require('../models/User');
 const { Op } = require('sequelize');
-// Crear un nuevo usuario
+const documentRepository = require('./documentRepository');
 exports.createUser = async (userData) => {
   return await User.create(userData);
 };
@@ -51,9 +51,25 @@ exports.getAllUsers = async (offset, limit) => {
 };
 
 exports.getAllInactiveUsers = async (offset, limit) => {
-  return await User.findAll({ where: { estado: false,
-    [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
-   }, order:[['fecha_registro', 'DESC']],offset, limit });
+  const allInactiveUsers = await User.findAll({ 
+    where: { 
+      estado: false,
+      [Op.or]: [
+        { tipo_usuario: 'colaborador' }, 
+        { tipo_usuario: 'contratista' }
+      ]
+    },
+    order: [['fecha_registro', 'DESC']],
+    offset, 
+    limit
+  });
+
+  const filteredUsers = await Promise.all(allInactiveUsers.map(async (user) => {
+    const tieneDocumentosValidos = await documentRepository.enviarTrueDocument(user.id);
+    return tieneDocumentosValidos ? user : null;
+  }));
+
+  return filteredUsers.filter(user => user !== null);
 };
 
 exports.countUsers = async () => {
@@ -62,11 +78,25 @@ exports.countUsers = async () => {
    } });
 };
 
-exports.countInactiveUsers = async () => {
-  return await User.count({ where: { estado: false,
-    [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
-   } });
+exports.countInactiveUsers = async () => { 
+  const allInactiveUsers = await User.findAll({ 
+    where: { 
+      estado: false,
+      [Op.or]: [
+        { tipo_usuario: 'colaborador' }, 
+        { tipo_usuario: 'contratista' }
+      ]
+    }
+  });
+
+  const filteredUsers = await Promise.all(allInactiveUsers.map(async (user) => {
+    const tieneDocumentosValidos = await documentRepository.enviarTrueDocument(user.id);
+    return tieneDocumentosValidos ? user : null;
+  }));
+
+  return filteredUsers.filter(user => user !== null).length;
 };
+
 exports.findColaboradoresByLocation = async ({ colaboradorIds, ciudad, distrito, offset, limit, search, searchl }) => {
   const whereCondition = {
     id: colaboradorIds,
@@ -92,5 +122,14 @@ exports.findColaboradoresByLocation = async ({ colaboradorIds, ciudad, distrito,
     ],
     offset,
     limit,
+  });
+};
+
+exports.countUsuariosByTipoAndEstado = async (tipo, estado = true) => {
+  return await User.count({
+    where: {
+      tipo_usuario: tipo,
+      estado
+    }
   });
 };

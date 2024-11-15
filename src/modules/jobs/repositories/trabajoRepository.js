@@ -50,8 +50,9 @@ exports.countTrabajosByDistrito = async (distrito) => {
         where: { distrito, estado: 'Abierto' }
     });
 };
-
-
+exports.countTrabajos = async () => {
+    return await Trabajo.count();
+};
 exports.findTrabajosByTitleAndLocation = async ({ search, ciudad, distrito, estado = 'Abierto', offset, limit }) => {
   const whereCondition = {
     estado,
