@@ -32,3 +32,15 @@ exports.getAllQuejas = async (page, limit, estado) => {
         ]
     });
 };
+exports.updateQuejaEstado = async (id, estado) => {
+  const queja = await Queja.findByPk(id);
+
+  if (!queja) {
+    throw new Error('La queja no existe');
+  }
+
+  queja.estado = estado;
+  await queja.save();
+
+  return queja;
+};

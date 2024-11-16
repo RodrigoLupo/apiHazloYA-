@@ -33,3 +33,26 @@ exports.getAllQuejas = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener las quejas' });
     }
 };
+exports.updateQuejaEstado = async (req, res) => {
+  try {
+    const { id } = req.params; // ID de la queja desde los parámetros de la ruta
+    const { estado } = req.query; // Estado desde la query string
+
+    if (!estado) {
+      return res.status(400).json({ message: 'El estado es obligatorio en el query' });
+    }
+
+    const updatedQueja = await quejaService.updateQuejaEstado(id, estado);
+
+    res.json({
+      message: 'Estado de la queja actualizado exitosamente',
+      queja: {
+        id: updatedQueja.id,
+        estado: updatedQueja.estado
+      }
+    });
+  } catch (error) {
+    console.error('Error al actualizar estado de la queja:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};

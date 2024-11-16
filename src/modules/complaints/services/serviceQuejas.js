@@ -49,3 +49,12 @@ exports.getAllQuejas = async (page, limit, estado) => {
         limit
     };
 };
+exports.updateQuejaEstado = async (id, estado) => {
+  const estadosPermitidos = [ 'Vista', 'Resuelto'];
+
+  if (!estadosPermitidos.includes(estado)) {
+    throw new Error(`El estado "${estado}" no es válido. Estados permitidos: ${estadosPermitidos.join(', ')}`);
+  }
+
+  return await quejaRepository.updateQuejaEstado(id, estado);
+};
