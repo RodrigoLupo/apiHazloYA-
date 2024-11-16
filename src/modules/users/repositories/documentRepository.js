@@ -21,6 +21,9 @@ exports.enviarTrueDocument = async (usuarioId) => {
   return tieneDocumentosPendientes === null;
 };
 
+exports.countDocumentsPending = async (usuarioId) => {
+  return await Document.countDocuments({ usuario_id: usuarioId, estado: 'pendiente' });
+};
 
 exports.createDocument = async (documentData) => {
   return await Document.create(documentData);

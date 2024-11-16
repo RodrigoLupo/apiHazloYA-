@@ -22,7 +22,7 @@ exports.getUserWithDocuments = async (usuarioId) => {
   }
 
   // Obtener los documentos del usuario desde MongoDB
-  const documents = await documentRepository.getDocumentsByUserId(usuarioId);
+  const documents = await documentRepository.getPendingDocumentsByUserId(usuarioId);
 
   return {
     user: {
@@ -30,6 +30,8 @@ exports.getUserWithDocuments = async (usuarioId) => {
       nombre: user.nombre,
       apellido: user.apellido,
       email: user.email,
+      telefono: user.telefono,
+      tipo: user.tipo_usuario,
       estado: user.estado,
       fecha_registro: user.fecha_registro
     },
@@ -47,20 +49,17 @@ exports.getAllUsersWithDocuments = async () => {
   
   // Iterar sobre los usuarios para obtener sus documentos
   const usersWithDocuments = await Promise.all(users.map(async (user) => {
-    const documents = await documentRepository.getPendingDocumentsByUserId(user.id);
-    if (documents.length === 0) return null;
+    const documents = await documentRepository.countDocumentsPending(user.id);
+    if (documents === 0) return null;
     return {
       id: user.id,
       nombre: user.nombre,
       apellido: user.apellido,
       email: user.email,
       telefono: user.telefono,
-      estado: user.estado,
+      tipo: user.tipo_usuario,
       fecha_registro: user.fecha_registro,
-      documents: documents.map(doc => ({
-        tipo_documento: doc.tipo_documento,
-        ruta_archivo: `http://localhost:3000/uploads/${path.basename(doc.ruta_archivo)}`
-      }))
+      documentos_pendientes: documents
     };
   }));
 
