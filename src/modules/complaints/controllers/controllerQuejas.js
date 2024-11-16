@@ -42,7 +42,7 @@ exports.updateQuejaEstado = async (req, res) => {
       return res.status(400).json({ message: 'El estado es obligatorio en el query' });
     }
 
-    const updatedQueja = await quejaService.updateQuejaEstado(id, estado);
+    await quejaService.updateQuejaEstado(id, estado);
 
     res.status(200).json({
       message: 'Estado de la queja actualizado exitosamente',
