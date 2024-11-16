@@ -19,7 +19,7 @@ const Trabajo = sequelize.define('Trabajo', {
   distrito: { type: DataTypes.STRING},
   ubicacion: { type: DataTypes.STRING},
   estado: {
-    type: DataTypes.ENUM('Abierto', 'Cerrado', 'Cancelado'),
+    type: DataTypes.ENUM('Abierto', 'Cerrado','En proceso', 'Cancelado'),
     defaultValue: 'Abierto'
   },
   fecha_creacion: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }

@@ -79,3 +79,31 @@ exports.findTrabajosByTitleAndLocation = async ({ search, ciudad, distrito, esta
   });
   return { trabajos, total };
 };
+exports.getPostulacionAceptadaByTrabajoId = async (trabajoId) => {
+    return await Postulacion.findOne({
+        where: { trabajo_id: trabajoId, estado: 'Aceptado' },
+        include: [{ model: Trabajo, as: 'trabajo' }]
+    });
+};
+
+exports.getHistorialTrabajosByContratistaId = async (contratistaId, estado, offset, limit) => {
+    return await Trabajo.findAll({
+        where: {
+            contratista_id: contratistaId,
+            estado: estado // Filtro por estado
+        },
+        offset,
+        limit,
+        order: [['fecha_creacion', 'DESC']]
+    });
+};
+
+exports.getAllTrabajos = async (page, limit) => {
+    const offset = (page - 1) * limit;
+
+    return await Trabajo.findAndCountAll({
+        order: [['fecha_creacion', 'DESC']],
+        limit,
+        offset
+    });
+};

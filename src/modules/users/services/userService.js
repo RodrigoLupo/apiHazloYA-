@@ -43,7 +43,7 @@ exports.createEncargadoOrAdmin = async (adminId, userData) => {
 exports.rechazar = async (userId) => {
   await userRepository.deleteUser(userId);
   const documentos = await documentRepository.getDocumentByIdUser(userId);
-  if (documentos) {
+  if (!documentos) {
     await documentRepository.updateDocumentStatusByUserId("rechazado", userId);
   }
 }

@@ -1,5 +1,4 @@
 const postulacionRepository = require('../repositories/postulacionRepository');
-const userRepository = require('../../users/repositories/userRepository');
 const Rating = require('../../users/models/Rating');
 
 
@@ -21,12 +20,15 @@ exports.updatePostulacionStatus = async (id, newStatus) => {
 exports.getPostulantesByTrabajo = async (trabajoId) => {
     const postulaciones = await postulacionRepository.findPostulacionesByTrabajoId(trabajoId);
     return postulaciones.map(postulacion => ({
+        id_postulacion: postulacion.id,
+        estado_postulacion: postulacion.estado,
         id: postulacion.colaborador.id,
         nombre: postulacion.colaborador.nombre,
         apellido: postulacion.colaborador.apellido,
         calificacion: postulacion.colaborador.calificacion,
         precio: postulacion.precio_ofrecido,
-        duracion: postulacion.tiempo_estimado
+        duracion: postulacion.tiempo_estimado,
+        
     }));
 };
 exports.getHistorialPostulaciones = async (colaboradorId, estado, page = 1, limit = 10) => {
