@@ -52,3 +52,12 @@ exports.updateQuejaEstado = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getQuejasSummary = async (req, res) => {
+  try {
+    const summary = await quejaService.getQuejasSummary();
+    res.status(200).json(summary);
+  } catch (error) {
+    console.error('Error al obtener resumen de quejas:', error);
+    res.status(500).json({ error: 'Error al obtener resumen de quejas.' });
+  }
+};

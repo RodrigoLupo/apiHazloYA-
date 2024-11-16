@@ -58,3 +58,12 @@ exports.updateQuejaEstado = async (id, estado) => {
 
   return await quejaRepository.updateQuejaEstado(id, estado);
 };
+exports.getQuejasSummary = async () => {
+  const { estados, total } = await quejaRepository.getQuejasCount();
+  return {
+    total,
+    pendiente: estados.Pendiente || 0,
+    vista: estados.Vista || 0,
+    resuelto: estados.Resuelto || 0
+  };
+};
