@@ -126,3 +126,16 @@ exports.getReport = async () => {
     nroContratistasActivos
   };
 };
+exports.searchUsersByNameOrLastName = async (name, lastName) => {
+  const users = await userRepository.findUsersByNameOrLastName(name, lastName);
+
+  return users.map(user => ({
+      id: user.id,
+      nombre: user.nombre,
+      apellido: user.apellido,
+      email: user.email,
+      telefono: user.telefono,
+      estado: user.estado,
+      fecha_registro: user.fecha_registro
+  }));
+};

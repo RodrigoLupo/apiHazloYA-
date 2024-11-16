@@ -13,4 +13,5 @@ router.post('/create-encargado', verifyToken, isEncargadoOrAdmin, userController
 router.delete('/rechazar/:id', verifyToken, isAdmin, userController.deleteUser); // Ruta para rechazar un usuario
 router.get('/miestado', verifyToken, userController.EstadoUsuario); // Ruta para obtener el estado del usuario
 router.get('/reporte', verifyToken, isAdmin,userController.getReport); // Ruta para obtener el reporte de usuarios y trabajos publicados
+router.get('/search', verifyToken, isAdmin, userController.searchUsers); // Ruta para buscar usuarios por nombre y apellido 
 module.exports = router;

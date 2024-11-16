@@ -82,3 +82,23 @@ exports.getReport = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.searchUsers = async (req, res) => {
+  try {
+      const { name, lastName } = req.query;
+
+      if (!name && !lastName) {
+          return res.status(400).json({ error: 'Debe proporcionar al menos un parámetro: name o lastName' });
+      }
+
+      const users = await userService.searchUsersByNameOrLastName(name, lastName);
+
+      if (users.length === 0) {
+          return res.status(404).json({ message: 'No se encontraron usuarios con los criterios proporcionados' });
+      }
+
+      res.json(users);
+  } catch (error) {
+      console.error('Error en searchUsers:', error);
+      res.status(500).json({ error: 'Error al buscar usuarios' });
+  }
+};

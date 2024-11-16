@@ -1,5 +1,3 @@
-// src/modules/users/repositories/userRepository.js
-
 const User = require('../models/User');
 const { Op } = require('sequelize');
 const documentRepository = require('./documentRepository');
@@ -131,5 +129,21 @@ exports.countUsuariosByTipoAndEstado = async (tipo, estado = true) => {
       tipo_usuario: tipo,
       estado
     }
+  });
+};
+exports.findUsersByNameOrLastName = async (name, lastName) => {
+  const whereClause = {estado: true};
+  
+  if (name) {
+      whereClause.nombre = { [Op.like]: `%${name}%` };
+  }
+  if (lastName) {
+      whereClause.apellido = { [Op.like]: `%${lastName}%` };
+  }
+
+  return await User.findAll({
+      where: whereClause,
+      attributes: ['id', 'nombre', 'apellido', 'email', 'telefono', 'estado', 'fecha_registro'],
+      order: [['fecha_registro', 'DESC']]
   });
 };

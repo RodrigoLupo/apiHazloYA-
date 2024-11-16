@@ -62,7 +62,13 @@ exports.isAdmin = async (req, res, next) => {
 exports.isColaborador = async (req, res, next) => {
   try {
     const user = await userRepository.findUserById(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
 
+    if (!user.estado) {
+      return res.status(401).json({ message: 'Usuario inactivo.' });
+    }
     if (!user || user.tipo_usuario !== 'colaborador') {
       return res.status(403).json({ message: 'Acceso denegado: Se requiere rol de colaborador.' });
     }
@@ -77,6 +83,14 @@ exports.isContratista = async (req, res, next) => {
   try {
     const user = await userRepository.findUserById(req.userId);
 
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
+    }
+
+    if (!user.estado) {
+      return res.status(401).json({ message: 'Usuario inactivo.' });
+    }
+    
     if (!user || user.tipo_usuario !== 'contratista') {
       return res.status(403).json({ message: 'Acceso denegado: Se requiere rol de contratista.' });
     }

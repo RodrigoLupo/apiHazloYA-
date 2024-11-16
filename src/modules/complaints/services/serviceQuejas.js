@@ -31,8 +31,8 @@ exports.createQueja = async (usuarioId, trabajoId, titulo, descripcion, tipo) =>
     implicado
   });
 };
-exports.getAllQuejas = async (page, limit) => {
-    const { count, rows } = await quejaRepository.getAllQuejas(page, limit);
+exports.getAllQuejas = async (page, limit, estado) => {
+    const { count, rows } = await quejaRepository.getAllQuejas(page, limit, estado);
 
     return {
         total: count,
@@ -41,6 +41,7 @@ exports.getAllQuejas = async (page, limit) => {
             titulo: queja.titulo,
             descripcion: queja.descripcion,
             tipo: queja.tipo,
+            estado: queja.estado,
             implicado: queja.implicado,
             fecha: queja.fecha
         })),

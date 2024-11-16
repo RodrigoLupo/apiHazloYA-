@@ -20,13 +20,13 @@ exports.createQueja = async (req, res) => {
 
 exports.getAllQuejas = async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query;
+        const { page = 1, limit = 10,  estado = 'Pendiente' } = req.query;
 
         if (isNaN(page) || isNaN(limit)) {
             return res.status(400).json({ error: 'Los parámetros page y limit deben ser numéricos' });
         }
 
-        const resultado = await quejaService.getAllQuejas(parseInt(page), parseInt(limit));
+        const resultado = await quejaService.getAllQuejas(parseInt(page), parseInt(limit), estado);
         res.json(resultado);
     } catch (error) {
         console.error('Error en getAllQuejas:', error);
