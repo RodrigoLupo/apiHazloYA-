@@ -44,12 +44,8 @@ exports.updateQuejaEstado = async (req, res) => {
 
     const updatedQueja = await quejaService.updateQuejaEstado(id, estado);
 
-    res.json({
+    res.status(200).json({
       message: 'Estado de la queja actualizado exitosamente',
-      queja: {
-        id: updatedQueja.id,
-        estado: updatedQueja.estado
-      }
     });
   } catch (error) {
     console.error('Error al actualizar estado de la queja:', error.message);
