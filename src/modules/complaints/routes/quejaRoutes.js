@@ -5,5 +5,5 @@ const authMiddleware = require('../../../middleware/authMiddleware');
 
 router.post('/crear/:tipo', authMiddleware.verifyToken, quejaController.createQueja);
 router.get('/all', authMiddleware.verifyToken, authMiddleware.isEncargadoOrAdmin,quejaController.getAllQuejas);
-router.patch('/quejas/:id', quejaController.updateQuejaEstado)// Ruta para actualizar el estado de una queja;
+router.patch('/actualizar/:id', quejaController.updateQuejaEstado)// Ruta para actualizar el estado de una queja;
 module.exports = router;
