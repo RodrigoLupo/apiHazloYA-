@@ -42,57 +42,67 @@ exports.findUserStatusById = async (id) => {
   }
   throw new Error('Usuario no encontrado');
 };
-exports.getAllUsers = async (offset, limit) => {
-  return await User.findAll({ where: { estado: true,
-    [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
-   }, order:[['fecha_registro', 'DESC']], offset, limit });
+exports.getAllUsers = async (offset, limit, tipoUsuario) => {
+  const whereClause = {
+    estado: true,
+    [Op.or]: tipoUsuario
+      ? [{ tipo_usuario: tipoUsuario }]
+      : [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
+  };
+
+  return await User.findAll({
+    where: whereClause,
+    order: [['fecha_registro', 'DESC']],
+    offset,
+    limit
+  });
 };
 
-exports.getAllInactiveUsers = async (offset, limit) => {
-  const allInactiveUsers = await User.findAll({ 
-    where: { 
-      estado: false,
-      [Op.or]: [
-        { tipo_usuario: 'colaborador' }, 
-        { tipo_usuario: 'contratista' }
-      ]
-    },
+exports.getAllInactiveUsers = async (offset, limit, tipoUsuario) => {
+  const whereClause = {
+    estado: false,
+    [Op.or]: tipoUsuario
+      ? [{ tipo_usuario: tipoUsuario }]
+      : [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
+  };
+
+  const allInactiveUsers = await User.findAll({
+    where: whereClause,
     order: [['fecha_registro', 'DESC']],
-    offset, 
+    offset,
     limit
   });
 
-  const filteredUsers = await Promise.all(allInactiveUsers.map(async (user) => {
-    const tieneDocumentosValidos = await documentRepository.enviarTrueDocument(user.id);
-    return tieneDocumentosValidos ? user : null;
-  }));
+  const filteredUsers = await Promise.all(
+    allInactiveUsers.map(async (user) => {
+      const tieneDocumentosValidos = await documentRepository.enviarTrueDocument(user.id);
+      return tieneDocumentosValidos ? user : null;
+    })
+  );
 
-  return filteredUsers.filter(user => user !== null);
+  return filteredUsers.filter((user) => user !== null);
 };
 
-exports.countUsers = async () => {
-  return await User.count({ where: { estado: true
-    , [Op.or]: [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }] 
-   } });
+exports.countUsers = async (tipoUsuario) => {
+  const whereClause = {
+    estado: true,
+    [Op.or]: tipoUsuario
+      ? [{ tipo_usuario: tipoUsuario }]
+      : [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
+  };
+
+  return await User.count({ where: whereClause });
 };
 
-exports.countInactiveUsers = async () => { 
-  const allInactiveUsers = await User.findAll({ 
-    where: { 
-      estado: false,
-      [Op.or]: [
-        { tipo_usuario: 'colaborador' }, 
-        { tipo_usuario: 'contratista' }
-      ]
-    }
-  });
+exports.countInactiveUsers = async (tipoUsuario) => {
+  const whereClause = {
+    estado: false,
+    [Op.or]: tipoUsuario
+      ? [{ tipo_usuario: tipoUsuario }]
+      : [{ tipo_usuario: 'colaborador' }, { tipo_usuario: 'contratista' }]
+  };
 
-  const filteredUsers = await Promise.all(allInactiveUsers.map(async (user) => {
-    const tieneDocumentosValidos = await documentRepository.enviarTrueDocument(user.id);
-    return tieneDocumentosValidos ? user : null;
-  }));
-
-  return filteredUsers.filter(user => user !== null).length;
+  return await User.count({ where: whereClause });
 };
 
 exports.findColaboradoresByLocation = async ({ colaboradorIds, ciudad, distrito, offset, limit, search, searchl }) => {

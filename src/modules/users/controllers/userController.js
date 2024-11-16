@@ -57,8 +57,9 @@ exports.deleteUser = async (req, res) => {
 };
 exports.getActiveUsers = async (req, res) => {
   try {
+    const tipoUsuario = req.query.tipo || null;
     const page = parseInt(req.params.page) || 1;
-    const { users, total } = await userService.getActiveUsers(page);
+    const { users, total } = await userService.getActiveUsers(page, tipoUsuario);
     res.status(200).json({ users, total });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -68,7 +69,8 @@ exports.getActiveUsers = async (req, res) => {
 exports.getInactiveUsers = async (req, res) => {
   try {
     const page = parseInt(req.params.page) || 1;
-    const { users, total } = await userService.getInactiveUsers(page);
+    const tipoUsuario = req.query.tipo || null;
+    const { users, total } = await userService.getInactiveUsers(page, tipoUsuario);
     res.status(200).json({ users, total });
   } catch (error) {
     res.status(400).json({ error: error.message });

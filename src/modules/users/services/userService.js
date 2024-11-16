@@ -95,19 +95,19 @@ exports.deactivateUser = async (userId) => {
   user.estado = false;
   await user.save();
 };
-exports.getActiveUsers = async (page = 1) => {
+exports.getActiveUsers = async (page = 1, tipoUsuario) => {
   const limit = 10;
   const offset = (page - 1) * limit;
-  const users = await userRepository.getAllUsers(offset, limit);
-  const total = await userRepository.countUsers();
+  const users = await userRepository.getAllUsers(offset, limit, tipoUsuario);
+  const total = await userRepository.countUsers(tipoUsuario);
   return { users, total };
 };
 
-exports.getInactiveUsers = async (page = 1) => {
+exports.getInactiveUsers = async (page = 1, tipoUsuario) => {
   const limit = 10;
   const offset = (page - 1) * limit;
-  const users = await userRepository.getAllInactiveUsers(offset, limit);
-  const total = await userRepository.countInactiveUsers();
+  const users = await userRepository.getAllInactiveUsers(offset, limit, tipoUsuario);
+  const total = await userRepository.countInactiveUsers(tipoUsuario);
   return { users, total };
 };
 
