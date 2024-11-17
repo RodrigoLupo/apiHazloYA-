@@ -64,8 +64,11 @@ exports.streamDocument = async (req, res) => {
 
   if (!token) {
     return res.status(401).json({ error: 'Token no proporcionado' });
-  }  
+  }
+
   try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { key } = decoded;
     const fileStream = await documentService.getFileStream(key);
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'inline');
