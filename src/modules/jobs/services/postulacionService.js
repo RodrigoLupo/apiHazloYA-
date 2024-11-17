@@ -55,6 +55,7 @@ exports.getHistorialPostulaciones = async (colaboradorId, estado, page = 1, limi
             precioOfrecido: postulacion.precio_ofrecido,
             estado: postulacion.estado,
             distritoTrabajo: postulacion.trabajo.distrito,
+            trabajoId: postulacion.trabajo_id,
             nombreContratista: postulacion.trabajo.contratista.nombre,
             calificacionColaborador: {
                 puntualidad: rating?.puntualidad || 0,
