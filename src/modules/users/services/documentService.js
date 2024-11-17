@@ -2,7 +2,22 @@ const Document = require('../models/Document');
 const documentRepository = require('../repositories/documentRepository');
 const userService = require('../services/userService');
 const path = require('path');
-
+const fs = require('fs');
+const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const config = {
+  devMode: process.env.DEV_MODE === 'true',
+  bucketName: process.env.S3_BUCKET_NAME,
+  region: process.env.S3_REGION,
+  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+};
+const s3 = new S3Client({
+  region: config.region,
+  credentials: {
+    accessKeyId: config.accessKeyId,
+    secretAccessKey: config.secretAccessKey,
+  },
+});
 exports.saveDocument = async (usuarioId, tipoDocumento, filePath) => {
   const newDocument = new Document({
     usuario_id: usuarioId,
@@ -13,6 +28,37 @@ exports.saveDocument = async (usuarioId, tipoDocumento, filePath) => {
   
   return await newDocument.save();
 };
+exports.uploadFile = async (file, key) => {
+  if (config.devMode) {
+    const filePath = path.join(__dirname, '../../../../uploads/', key);
+    fs.writeFileSync(filePath, file.buffer);
+    return `/uploads/${key}`;
+  } else {
+    const command = new PutObjectCommand({
+      Bucket: config.bucketName,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    });
+    await s3.send(command);
+    return `https://${config.bucketName}.s3.${config.region}.amazonaws.com/${key}`;
+  }
+};
+
+exports.getFileStream = async (key) => {
+  if (config.devMode) {
+    const localPath = path.join(__dirname, '../uploads/', key);
+    return fs.createReadStream(localPath);
+  } else {
+    const command = new GetObjectCommand({
+      Bucket: config.bucketName,
+      Key: key,
+    });
+    const { Body } = await s3.send(command);
+    return Body;
+  }
+};
+
 exports.getUserWithDocuments = async (usuarioId) => {
   // Obtener el usuario desde MySQL
   const user = await userService.getUserById(usuarioId);
@@ -37,7 +83,7 @@ exports.getUserWithDocuments = async (usuarioId) => {
     },
     documents: documents.map(doc => ({
       tipo_documento: doc.tipo_documento,
-      ruta_archivo: `http://localhost:3000/uploads/${path.basename(doc.ruta_archivo)}`,
+      nombre_key: doc.nombre_key,
       fecha_subida: doc.fecha_subida
     }))
   };

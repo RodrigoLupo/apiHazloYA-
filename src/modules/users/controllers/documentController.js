@@ -1,7 +1,7 @@
 const documentService = require('../services/documentService');
-
+const Document = require('../models/Document');
 // Controlador para subir documentos
-exports.uploadDocument = async (req, res) => {
+exports.uploadDocument2 = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'Archivo no proporcionado.' });
@@ -18,8 +18,44 @@ exports.uploadDocument = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+exports.uploadDocument = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Archivo no proporcionado.' });
+    }
 
+    const { tipo_documento } = req.body;
+    const usuarioId = req.userId;
+    const key = `${tipo_documento}/${Date.now()}_${req.file.originalname}`;
 
+    const rutaArchivo = await documentService.uploadFile(req.file, key);
+
+    const newDocument = new Document({
+      usuario_id: usuarioId,
+      tipo_documento,
+      estado: 'pendiente',
+      nombre_key: key,
+      ruta_archivo: rutaArchivo,
+    });
+
+    await newDocument.save();
+    res.status(201).json({ message: 'Documento subido correctamente', documento: newDocument });
+  } catch (error) {
+    console.error('Error al subir documento:', error);
+    res.status(500).json({ error: 'Error al subir documento' });
+  }
+};
+exports.streamDocument = async (req, res) => {
+  const { key } = req.query;
+
+  try {
+    const fileStream = await documentService.getFileStream(key);
+    fileStream.pipe(res);
+  } catch (error) {
+    console.error('Error al transmitir archivo:', error);
+    res.status(404).json({ error: 'Archivo no encontrado' });
+  }
+};
 exports.getUserWithDocuments = async (req, res) => {
   try {
     const { id } = req.params; // ID del usuario pasado como parámetro

@@ -24,6 +24,6 @@ app.use('/ranking', ratingRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 app.use('/api/oficios', oficioRoutes);
 app.use('/api/quejas', quejaRoutes);
-limpiezadocs.deleteRejectedDocumentsAndFiles();
-setInterval(limpiezadocs.deleteRejectedDocumentsAndFiles, 24 * 60 * 60 * 1000);
+//limpiezadocs.deleteRejectedDocumentsAndFiles();
+//setInterval(limpiezadocs.deleteRejectedDocumentsAndFiles, 24 * 60 * 60 * 1000);
 module.exports = app;

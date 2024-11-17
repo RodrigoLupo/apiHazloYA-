@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const app = require('./config/app.js');
 const sequelize = require('./config/database.js');
 const mongoose = require('mongoose');
