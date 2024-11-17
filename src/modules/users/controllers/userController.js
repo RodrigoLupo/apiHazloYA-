@@ -104,3 +104,13 @@ exports.searchUsers = async (req, res) => {
       res.status(500).json({ error: 'Error al buscar usuarios' });
   }
 };
+
+exports.miPerfil = async (req, res) => {
+  try{
+    const userId = req.userId;
+    const profile = await userService.getProfile(userId);
+    res.status(200).json(profile);
+  }catch(error){
+    res.status(400).json({ error: error.message });
+  }
+};

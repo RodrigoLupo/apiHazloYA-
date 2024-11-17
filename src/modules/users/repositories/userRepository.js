@@ -12,6 +12,13 @@ exports.updateUserState = async (userId, state) => {
 exports.findUserById = async (userId) => {
   return await User.findByPk(userId);
 };
+
+exports.findPerfilById = async (userId) => {
+  return await User.findByPk(userId, {
+    attributes: ['nombre', 'apellido', 'email', 'pais', 'ciudad', 'distrito', 'telefono', 'calificacion']
+  });
+}
+
 exports.adminExists = async () => {
   return await User.findOne({ where: { tipo_usuario: 'admin' } }) != null;
 };

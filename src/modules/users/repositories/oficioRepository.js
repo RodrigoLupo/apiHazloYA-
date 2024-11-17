@@ -13,6 +13,10 @@ exports.addColaborador = async (oficioId, colaboradorId) => {
   );
 };
 
+exports.findOficiosByColaboradorId = async (userId)  => {
+  return await Oficio.find({ colaboradores: userId }, {nombre: 1, _id: 0});
+};
+
 exports.getColaboradoresByOficio = async (nombre) => {
   return await Oficio.findOne({ nombre });
 };

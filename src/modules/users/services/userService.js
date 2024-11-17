@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Ajusta la ruta según la estructura de tu proyecto
 const documentRepository = require('../repositories/documentRepository');
 const trabajoRepository = require('../../jobs/repositories/trabajoRepository');
-
+const oficioRepository = require('../repositories/oficioRepository');
 exports.registerUser = async (userData) => {
   if (!['colaborador', 'contratista'].includes(userData.tipo_usuario)) {
     throw new Error('Solo los tipos colaborador o contratista están permitidos para registro.');
@@ -40,6 +40,21 @@ exports.createEncargadoOrAdmin = async (adminId, userData) => {
 
   return newUser;
 };
+
+exports.getProfile(userId) = async (userId) => {
+  const user = await userRepository.findPerfilById(userId);
+  if(!user){
+    throw new Error('Usuario no encontrado');
+  }
+  const oficios = await oficioRepository.findOficiosByColaboradorId(userId);
+  const oficioNombres = oficios.map(oficio => oficio.nombre);
+
+  return {
+    ...user.get(),
+    oficios: oficioNombres.length > 0 ? oficioNombres : undefined
+  }
+}
+
 exports.rechazar = async (userId) => {
   await userRepository.deleteUser(userId);
   const documentos = await documentRepository.getDocumentByIdUser(userId);
