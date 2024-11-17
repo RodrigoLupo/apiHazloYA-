@@ -22,7 +22,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/ranking', ratingRoutes);
-app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 app.use('/api/oficios', oficioRoutes);
 app.use('/api/quejas', quejaRoutes);
 cron.schedule('0 0 * * *', async () => {
