@@ -41,7 +41,7 @@ exports.createEncargadoOrAdmin = async (adminId, userData) => {
   return newUser;
 };
 
-exports.getProfile(userId) = async (userId) => {
+exports.getProfile = async (userId) => {
   const user = await userRepository.findPerfilById(userId);
   if(!user){
     throw new Error('Usuario no encontrado');

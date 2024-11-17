@@ -1,6 +1,7 @@
 const documentService = require('../services/documentService');
 const Document = require('../models/Document');
-// Controlador para subir documentos
+const jwt = require('jsonwebtoken');
+
 exports.uploadDocument2 = async (req, res) => {
   try {
     if (!req.file) {
@@ -45,11 +46,29 @@ exports.uploadDocument = async (req, res) => {
     res.status(500).json({ error: 'Error al subir documento' });
   }
 };
-exports.streamDocument = async (req, res) => {
-  const { key } = req.query;
 
+exports.generateSignedUrl = async (req, res) => {
+  const { key } = req.query; // o req.query según tu preferencia
+  const userId = req.userId;
+  const token = jwt.sign(
+    { key, userId },
+    process.env.JWT_SECRET,
+    { expiresIn: '15m' } 
+  );
+  const signedUrl = `${process.env.BASE_URL}/api/documents/stream?token=${token}`;
+  res.json({ signedUrl });
+};
+
+exports.streamDocument = async (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(401).json({ error: 'Token no proporcionado' });
+  }  
   try {
     const fileStream = await documentService.getFileStream(key);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline');
     fileStream.pipe(res);
   } catch (error) {
     console.error('Error al transmitir archivo:', error);
