@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const cron = require('node-cron');
 const userRoutes = require('../modules/users/routes/userRoutes.js');
 const documentRoutes = require('../modules/users/routes/documentRoutes.js');
 const authRoutes = require('../modules/users/routes/authRoutes.js');
@@ -24,6 +25,8 @@ app.use('/ranking', ratingRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 app.use('/api/oficios', oficioRoutes);
 app.use('/api/quejas', quejaRoutes);
-//limpiezadocs.deleteRejectedDocumentsAndFiles();
-//setInterval(limpiezadocs.deleteRejectedDocumentsAndFiles, 24 * 60 * 60 * 1000);
+cron.schedule('0 0 * * *', async () => {
+    console.log('Ejecutando limpieza de documentos rechazados a medianoche');
+    await limpiezadocs.deleteRejectedDocumentsAndFiles();
+});
 module.exports = app;
