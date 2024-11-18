@@ -110,6 +110,8 @@ exports.getHistorialTrabajosByContratista = async (contratistaId, estado, page, 
         titulo: trabajo.titulo,
         descripcion: trabajo.descripcion,
         estado: trabajo.estado,
+        precio: trabajo.precio,
+        distrito: trabajo.distrito,
         fecha_creacion: trabajo.fecha_creacion
     }));
 };
