@@ -69,9 +69,9 @@ exports.findTrabajosByTitleAndLocation = async ({ search, ciudad, distrito, esta
         attributes: ['id','nombre', 'apellido', 'ciudad'],
       },
     ],
-    attributes: ['id' , 'titulo', 'descripcion', 'estado', 'precio', 'duracion', 'fecha_creacion'],
+    attributes: ['id' , 'titulo', 'descripcion', 'estado', 'precio', 'duracion', 'fecha_creacion', 'distrito'],
     order: [
-      ['distrito', distrito ? 'DESC' : 'ASC'],
+      ['distrito', distrito ? 'ASC' : 'DESC'],
       ['fecha_creacion', 'ASC'],
     ],
     offset,
