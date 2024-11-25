@@ -69,8 +69,8 @@ exports.ensureAdminExists = async () => {
     await userRepository.createUser({
       nombre: 'HazloYa',
       apellido: 'Admin',
-      email: 'hazloya.pe@gmail.com',
-      password: await bcrypt.hash('P+)8QdT_TqxoV8S1bjJ^O5.gs!k[]jy', 10),
+      email: 'ponlotu@gmail.com',
+      password: await bcrypt.hash('clavesegura', 10),
       tipo_usuario: 'admin',
       estado: true
     });
