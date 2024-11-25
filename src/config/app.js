@@ -28,4 +28,5 @@ cron.schedule('0 0 * * *', async () => {
     console.log('Ejecutando limpieza de documentos rechazados a medianoche');
     await limpiezadocs.deleteRejectedDocumentsAndFiles();
 });
+
 module.exports = app;

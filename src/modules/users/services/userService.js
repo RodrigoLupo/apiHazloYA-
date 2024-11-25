@@ -67,10 +67,10 @@ exports.ensureAdminExists = async () => {
   const adminExists = await userRepository.adminExists();
   if (!adminExists) {
     await userRepository.createUser({
-      nombre: 'Admin',
-      apellido: 'System',
-      email: 'admin@system.com',
-      password: await bcrypt.hash('securepassword', 10),
+      nombre: 'HazloYa',
+      apellido: 'Admin',
+      email: 'hazloya.pe@gmail.com',
+      password: await bcrypt.hash('P+)8QdT_TqxoV8S1bjJ^O5.gs!k[]jy', 10),
       tipo_usuario: 'admin',
       estado: true
     });
